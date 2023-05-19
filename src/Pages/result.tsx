@@ -1,18 +1,110 @@
 import React, { useState } from 'react'
 import { CustomButton } from '../Components/CustomButton/CustomButton'
-import { Box, Flex, ScrollView, Text } from 'native-base'
+import { Box, Flex, ScrollView, Text, theme } from 'native-base'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Dimensions } from "react-native"
-export const Result = () => {
+import { StyleSheet } from "react-native"
 
-    const itemList = [1, 2, 3, 4, 5, 6, 7, 8, 9, "*", "0", "x"]
-    const [operationData, setSperationData] = useState(null)
-    const [enteredDigit, setEnteredDigit] = useState(0)
-    const [result, setResult] = useState(null)
+export const Result = () => {
 
     const handleClick = (item) => {
         setEnteredDigit(item)
+        let list = digitWithOperations
+        list.push(item)
+        setDigitWithOperations([...list])
     }
+
+    const removeAll = () => {
+        setDigitWithOperations([])
+        setEnteredDigit(0)
+    }
+
+    const removeOneDigit = () => {
+        let list = digitWithOperations
+        if (list.length > 0) {
+            list.pop()
+            setDigitWithOperations([...list])
+        }
+    }
+
+    const handleOperation = (item) => {
+        switch (item) {
+            case item == "+":
+                return true
+        }
+    }
+
+    const itemList = [
+        {
+            label: 1, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: 2, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: 3, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: "C", width: "25%", handler: removeAll, style: styles.cancleButtonStyle
+        },
+        {
+            label: 4, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: 5, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: 6, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: "+", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+        },
+        {
+            label: 7, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: 8, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: 9, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: "-", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+        },
+        {
+            label: 0, width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: "00", width: "25%", handler: handleClick, style: styles.digitButtonStyle
+        },
+        {
+            label: "/", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+        },
+        {
+            label: "*", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+        },
+        {
+            label: "X", width: "48%", handler: removeOneDigit, style: {
+                ...styles.longButtonStyle, backgroundColor: theme.colors.red[500],
+            }
+        },
+        {
+            label: "=", width: "48%", handler: handleClick, style: {
+                ...styles.longButtonStyle, backgroundColor: theme.colors.green[400],
+            }
+        },
+
+    ]
+
+    const [operationData, setSperationData] = useState(0)
+    const [enteredDigit, setEnteredDigit] = useState(0)
+    const [digitWithOperations, setDigitWithOperations] = useState<Array<any>>([])
+    const [result, setResult] = useState(null)
+    const [twoWayList, setTwoWayList] = useState([])
+    const [numOne, setNumberOne] = useState("0")
+    const [numTwo, setNumberTwo] = useState("0")
+
+
 
     const windowHeight = Dimensions.get("window").height
     const windowWidth = Dimensions.get("window").width
@@ -36,25 +128,39 @@ export const Result = () => {
                     color={"white"}
                     fontSize={"xl"}
                 >
+                    {digitWithOperations.length == 0
+                        ?
+                        0 :
+                        digitWithOperations?.join("")}
+                </Text>
+                <Text
+                    color={"white"}
+                    fontSize={"8xl"}
+                >
                     {enteredDigit}
                 </Text>
             </Box>
             <Flex
                 height={"60%"}
-                // bg={"blue.800"}
                 width={"100%"}
-                padding={"20px"}
                 direction={"row"}
                 flexWrap={"wrap"}
+                mx={2}
             >
                 {
                     itemList.map((item, index) => {
                         return (
-                            <CustomButton
-                                key={index}
-                                heading={item?.toString()}
-                                handler={setEnteredDigit}
-                            />
+                            <Box
+                                width={item.width}
+                                px={item.width == "48%" ? "1" : "0"}
+                            >
+                                <CustomButton
+                                    key={index}
+                                    heading={item.label}
+                                    handler={item.handler}
+                                    style={item.style}
+                                />
+                            </Box>
                         )
                     })
                 }
@@ -62,3 +168,37 @@ export const Result = () => {
         </ >
     )
 }
+
+
+const styles = StyleSheet.create({
+    digitButtonStyle: {
+        color: theme.colors.success[400],
+        height: 65,
+        width: 65,
+        backgroundColor: theme.colors.success[400],
+        borderRadius: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: theme.sizes[2],
+        marginVertical: theme.sizes[2],
+    },
+    cancleButtonStyle: {
+        height: 65,
+        width: 65,
+        backgroundColor: theme.colors.red[400],
+        borderRadius: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: theme.sizes[2],
+        marginVertical: theme.sizes[2],
+    },
+    longButtonStyle: {
+        height: 65,
+        backgroundColor: theme.colors.gray[400],
+        borderRadius: 100,
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: theme.sizes[2],
+        marginVertical: theme.sizes[2],
+    },
+});

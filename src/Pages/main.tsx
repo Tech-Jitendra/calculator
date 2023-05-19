@@ -10,7 +10,7 @@ export const Main = () => {
     const windowWidth = Dimensions.get("window").width
 
     return (
-        <ScrollView bg={"dark.400s"} scrollEnabled={false}         >
+        <ScrollView bg={"dark.400s"} scrollEnabled={false} >
             <SafeAreaView  >
                 <Box
                     width={windowWidth}
