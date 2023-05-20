@@ -6,33 +6,43 @@ import { Dimensions } from "react-native"
 import { StyleSheet } from "react-native"
 
 export const Result = () => {
-
+    // let result1 = ""
+    let operations = { "+": "+", "/": "/", "-": "-", "*": "*" }
     const handleClick = (item) => {
         setEnteredDigit(item)
         let list = digitWithOperations
-        list.push(item)
-        setDigitWithOperations([...list])
+        // console.log("list.length > 1 && !(list[list.length - 1] in operations)", list.length > 1 && list[list.length - 1] in operations)
+        // if (list.length > 1 && list[list.length - 1] in operations)
+        //     list.slice(list.length - 1, 0)
+        // else
+        list += item
+        setDigitWithOperations(list)
+        if (list.length > 1 && !(list[list.length - 1] in operations))
+            setResult(eval(list))
     }
 
     const removeAll = () => {
-        setDigitWithOperations([])
+        setDigitWithOperations("")
         setEnteredDigit(0)
     }
 
     const removeOneDigit = () => {
-        let list = digitWithOperations
-        if (list.length > 0) {
-            list.pop()
-            setDigitWithOperations([...list])
-        }
+        // let list = digitWithOperations
+        // if (list.length > 0) {
+        //     list.pop()
+        //     setDigitWithOperations([...list])
+        // }
     }
 
-    const handleOperation = (item) => {
-        switch (item) {
-            case item == "+":
-                return true
-        }
-    }
+    // const handleOperation = (item) => {
+    //     let list = digitWithOperations
+    //     list.push(item)
+    //     setDigitWithOperations([...list])
+    //     switch (item) {
+    //         case item == "+":
+    //             return true
+    //     }
+    // }
 
     const itemList = [
         {
@@ -57,7 +67,7 @@ export const Result = () => {
             label: 6, width: "25%", handler: handleClick, style: styles.digitButtonStyle
         },
         {
-            label: "+", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+            label: "+", width: "25%", handler: handleClick, style: styles.cancleButtonStyle
         },
         {
             label: 7, width: "25%", handler: handleClick, style: styles.digitButtonStyle
@@ -69,7 +79,7 @@ export const Result = () => {
             label: 9, width: "25%", handler: handleClick, style: styles.digitButtonStyle
         },
         {
-            label: "-", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+            label: "-", width: "25%", handler: handleClick, style: styles.cancleButtonStyle
         },
         {
             label: 0, width: "25%", handler: handleClick, style: styles.digitButtonStyle
@@ -78,10 +88,10 @@ export const Result = () => {
             label: "00", width: "25%", handler: handleClick, style: styles.digitButtonStyle
         },
         {
-            label: "/", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+            label: "/", width: "25%", handler: handleClick, style: styles.cancleButtonStyle
         },
         {
-            label: "*", width: "25%", handler: handleOperation, style: styles.cancleButtonStyle
+            label: "*", width: "25%", handler: handleClick, style: styles.cancleButtonStyle
         },
         {
             label: "X", width: "48%", handler: removeOneDigit, style: {
@@ -89,7 +99,9 @@ export const Result = () => {
             }
         },
         {
-            label: "=", width: "48%", handler: handleClick, style: {
+            label: "=", width: "48%", handler: () => {
+                setResult(eval(digitWithOperations))
+            }, style: {
                 ...styles.longButtonStyle, backgroundColor: theme.colors.green[400],
             }
         },
@@ -98,7 +110,7 @@ export const Result = () => {
 
     const [operationData, setSperationData] = useState(0)
     const [enteredDigit, setEnteredDigit] = useState(0)
-    const [digitWithOperations, setDigitWithOperations] = useState<Array<any>>([])
+    const [digitWithOperations, setDigitWithOperations] = useState<string>('')
     const [result, setResult] = useState(null)
     const [twoWayList, setTwoWayList] = useState([])
     const [numOne, setNumberOne] = useState("0")
@@ -131,7 +143,7 @@ export const Result = () => {
                     {digitWithOperations.length == 0
                         ?
                         0 :
-                        digitWithOperations?.join("")}
+                        digitWithOperations}
                 </Text>
                 <Text
                     color={"white"}
